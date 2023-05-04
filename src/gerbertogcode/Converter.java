@@ -17,16 +17,22 @@ import javax.swing.JPanel;
 public class Converter {
 
   private float penSize = 0.2f;
-  private float tolerance = 0.01f;
-  private float scale = 1;
   private float zUp = 3;
+  public static int F = 1500;
+  public static float penDown = -0.2f;
+  public static float dx = 80.0f;
+  public static float dy = 80.0f;
   private boolean bebug = false;
   private boolean show = false;
   private boolean mirX = false;
   private boolean mirY = false;
+  private int repeat=0;
+  private float tolerance = 0.01f;
+  private float scale = 1;
+
   private String fileIn;
   private String fileOut ="out.gcode";
-  private int repeat=0;
+  
 
   public void convert() {
     Mover mo = new Mover();
@@ -35,6 +41,8 @@ public class Converter {
     mo.setTolerance(tolerance);
     mo.setzUp(zUp);
     mo.setRepeat(repeat);
+    mo.setF(F);
+    //mo.setF
     if (mirX) mo.setMirX(-1);
     if (mirY) mo.setMirY(-1);
     Parser pa = new Parser();
@@ -63,6 +71,10 @@ public class Converter {
       + "Settings:\n"
       + "   penSize:    "+penSize
       + "\n   penUp:      "+zUp
+      + "\n   penDown:      "+penDown
+      + "\n   F:      " + F
+      + "\n   dx:      " + dx
+      + "\n   dy:      "+dy            
       + "\n   precision:  "+tolerance
       + "\n   scale:      "+scale
       + "\n   mirror X:   "+mirX
@@ -114,6 +126,18 @@ public class Converter {
 
   public void setRepeat(int repeat) {
     this.repeat = repeat;
+  }
+  public void setF(int F) {
+    this.F = F;
+  }
+  public void setPenDown(float pd) {
+    Converter.penDown = pd;
+  }
+  public void setDx(float dx) {
+    this.dx = dx;
+  }
+  public void setDy(float dy) {
+    this.dy = dy;
   }
   
 }

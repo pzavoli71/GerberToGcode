@@ -27,6 +27,8 @@ public class Mover {
   private float mirY = 1;
   private float zUp = 3;
   private int repeat = 0;
+  private int F = 1500;
+  
 
   private final LinkedList<Move> moves = new LinkedList();
   private float x = 0;
@@ -54,7 +56,7 @@ public class Mover {
     switch (how) {
       case 1:
         if (up) {
-          add(new Move(0));
+          add(new Move(Converter.penDown));
           up = false;
         }
         lineTo(x, y);
@@ -82,7 +84,7 @@ public class Mover {
     StringBuilder a = new StringBuilder();
     a.append("G21 (metric ftw)\n");
     a.append("G90 (absolute mode)\n");
-    a.append("G92 X0 Y0 Z0 (you are here)\n");
+    //a.append("G92 X0 Y0 Z0 (you are here)\n");
     for (int i = 0; i < repeat + 1; ++i) {
       moves.forEach((Move m) -> {
         m.scale(scale);
@@ -92,7 +94,7 @@ public class Mover {
       a.append("G1 Z").append(zUp * scale).append("\n");
       a.append("G1 X0.0 Y0.0\n");
     }
-    a.append("M18\n");
+    //a.append("M18\n");
     return a;
   }
 
@@ -378,6 +380,9 @@ public class Mover {
 
   public void setRepeat(int repeat) {
     this.repeat = repeat;
+  }
+  public void setF(int F) {
+    this.F = F;
   }
 
 }

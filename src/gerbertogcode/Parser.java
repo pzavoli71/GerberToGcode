@@ -32,7 +32,7 @@ public class Parser {
   }
 
   public String[] getCommands(String fullFile) {
-    String in = fullFile.replace("%", "").replace("\n", "").trim().toUpperCase();
+    String in = fullFile.replace("%", "").replace("\r\n", "").trim().toUpperCase();
     return in.split("\\*");
   }
 

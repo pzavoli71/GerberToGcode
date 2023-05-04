@@ -1,26 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-private xmlns="http://www.netbeans.org/ns/project-private/1">
-    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="8">
-        <file>
-            <url>src/gerbertogcode/Parser.java</url>
-            <bookmark id="4">
-                <name/>
-                <line>55</line>
-                <key/>
-            </bookmark>
-        </file>
-    </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-<<<<<<< HEAD
-        <group/>
-=======
         <group>
-            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Mover.java</file>
-            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/GerberToGcode.java</file>
-            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Converter.java</file>
-            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Parser.java</file>
-            <file>file:/home/vojta3310/GerberToGcode/src/gerbertogcode/Tool.java</file>
+            <file>file:/C:/java/GerberToGcode/src/gerbertogcode/Converter.java</file>
+            <file>file:/C:/java/GerberToGcode/nbproject/build-impl.xml</file>
+            <file>file:/C:/java/GerberToGcode/src/gerbertogcode/Mover.java</file>
+            <file>file:/C:/java/GerberToGcode/nbproject/project.xml</file>
+            <file>file:/C:/java/GerberToGcode/src/gerbertogcode/Move.java</file>
+            <file>file:/C:/java/GerberToGcode/src/gerbertogcode/Parser.java</file>
+            <file>file:/C:/java/GerberToGcode/src/gerbertogcode/Tool.java</file>
+            <file>file:/C:/java/GerberToGcode/src/gerbertogcode/GerberToGcode.java</file>
         </group>
->>>>>>> a712dec8199cdd7973b6e7085362e0adba425390
     </open-files>
 </project-private>

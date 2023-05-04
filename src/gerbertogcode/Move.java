@@ -21,7 +21,8 @@ public class Move {
   private float scale = 1;
   private float mirX = 1;
   private float mirY = 1;
-
+  private int F = 1500;
+  
   public Move(float toX, float toY) {
     this.toX = toX;
     this.toY = toY;
@@ -50,13 +51,14 @@ public class Move {
     if (!Float.isNaN(toZ)) {
       a.append(" Z");
       a.append(Float.toString(getToZ()));
+      a.append(" F300.00\n");
     } else {
       a.append(" X");
       a.append(Float.toString(getToY()));
       a.append(" Y");
       a.append(Float.toString(getToX()));
+      a.append(" F" + Converter.F + ".00\n");
     }
-    a.append(" F3500.00\n");
     return a;
   }
 
