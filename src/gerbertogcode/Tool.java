@@ -15,6 +15,7 @@ public class Tool {
   private float h = 0.9f;
   private float w = 0.9f;
   private char s = 'C';
+  private float f = 0.8f;  
 
   public Tool(char shape, float d) {
     this.d = d;
@@ -28,6 +29,9 @@ public class Tool {
     this.w = w;
   }
 
+  public void setForo(float foro) {
+      this.f = foro;
+  }
   public float getD() {
     return d;
   }
@@ -42,6 +46,10 @@ public class Tool {
 
   public char getS() {
     return s;
+  }
+
+  public float getForo() {
+    return f;
   }
 
 }

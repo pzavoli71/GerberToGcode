@@ -73,7 +73,8 @@ public class Mover {
           add(new Move(zUp));
           up = true;
         }
-        drawShape(x, y);
+        // QUi devo vedere se esiste un hole in corrispondenza di questo pad e passarlo alla drawShape
+        drawShape(x, y, 0.8f);
         break;
     }
     this.x = x;
@@ -187,8 +188,207 @@ public class Mover {
     //back to center
     add(new Move(x, y));
   }
+  
+  private void drawSingleCircle(float x, float y, float rhole) {
+    float xv = -rhole;
+    boolean first = true;
+    while ( xv <= rhole) { // xstart is negative, so xv varies from -xstart to xstart
+        float yv = (float) Math.sqrt(Math.pow(rhole,2) - Math.pow(xv, 2));
+        add(new Move(x+xv, y+yv));
+        if ( first && up) {
+            add(new Move(0));
+            up = false;
+            first = false;
+        }
+        xv += tolerance;
+    }
+    // Now I go from right to left in x and draw the bottom arc of circle
+    xv = rhole;
+    while ( xv >= -rhole) { // xstart is negative, so xv varies from -xstart to xstart
+        float yv = -(float) Math.sqrt(Math.pow(rhole,2) - Math.pow(xv, 2));
+        add(new Move(x+xv, y+yv));
+        xv -= tolerance;
+    }      
+  }
+  
+  // Quando il Parser incontra una piazzola (Comando che termina con D03) inizia 
+  // la creaazione della serie mi Moves che servono per disegnare la piazzole
+  // che vengono aggiunte all'arraylist del disegno completo.
+  // All'arrivo su questa funzione la testina è in up, quindi bisogno ricordarsi di mandarla a zero dopo il primo movimento.
+  private void drawShape(float x, float y, float dhole) {
+    float rhole = dhole / 2.0f;         // Radius of hole
+    float rtool = tool.getD() / 2.0f;   // Radius of toolpad
+    float rpensize = penSize / 2.0f;    // Radius of pen
+    if (tool.getS() == 'C' || (tool.getS() == 'O' && (tool.getH() == tool.getW()))) {
+      boolean first = true;
+      if (tool.getS() == 'O' && (tool.getH() == tool.getW()))
+          rtool = tool.getH() / 2.0f;
+      float xstart = -rtool + rpensize;
+      while (xstart <= -rhole - rpensize) { // Comunque faccio almeno un giro
+          drawSingleCircle(x, y, -xstart);
+          /*
+          float xv = xstart;
+          while ( xv <= -xstart) { // xstart is negative, so xv varies from -xstart to xstart
+              float yv = (float) Math.sqrt(Math.pow(xstart,2) - Math.pow(xv, 2));
+              add(new Move(x+xv, y+yv));
+              if ( first && up) {
+                add(new Move(0));
+                up = false;
+                first = false;
+              }
+              xv += tolerance;
+          }
+          // Now I go from right to left in x and draw the bottom arc of circle
+          xv = -xstart;
+          while ( xv >= xstart) { // xstart is negative, so xv varies from -xstart to xstart
+              float yv = -(float) Math.sqrt(Math.pow(xstart,2) - Math.pow(xv, 2));
+              add(new Move(x+xv, y+yv));
+              xv -= tolerance;
+          }
+*/
+          // Now I increment xstart to draw another circle pensize/2 right of the previous
+          xstart += penSize;
+      }
+      if (rhole > 0) {
+        // Draw the outer circle of the hole
+        drawSingleCircle(x, y, rhole + rpensize);
+      }
+    } else if (tool.getS() == 'R' || tool.getS() == 'O') {
+      float h = tool.getH();
+      float w = tool.getW();
+      boolean first = true;
+      add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2));
 
-  private void drawShape(float x, float y) {
+        float xstart = -w / 2 + penSize / 2;
+        float ystart = -h / 2 + penSize / 2;
+        while ( xstart < 0 || first) {
+            ystart = xstart;
+            if ( first && up ) {
+                add(new Move(0));
+                up = false;
+            }
+            float xv = xstart, yv = ystart;
+            if ( first) {
+                add(new Move(x + xv, y + yv));
+                xv = -xstart;
+                add(new Move(x + xv, y + yv));
+                yv = -ystart;
+                add(new Move(x + xv, y + yv));
+                xv = xstart;
+                add(new Move(x + xv, y + yv));
+                yv = xstart;
+                add(new Move(x + xv, y + yv));                
+                first = false;
+            } else {
+                // down
+                // Control if the vertical line touch the hole circle 
+                float r = (float) Math.sqrt(Math.pow(xstart,2) + Math.pow(ystart,2));
+                if ( r > rhole + rpensize) {
+                    add(new Move(x + xv, y + yv));
+                    if ( xv >= -rhole - rpensize) {
+                        float yh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(xv,2));
+                        add(new Move(x + xv, y - yh));
+                        add(new Move(zUp));
+                        add(new Move(x + xv, y + yh));
+                        add(new Move(0));
+                    } 
+                    yv = -ystart;
+                    add(new Move(x + xv, y + yv));                    
+                    // right
+                    xv = -xstart;
+                    if ( yv <= -rhole - rpensize) {
+                        float xh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(yv,2));
+                        add(new Move(x - xh, y + yv));
+                        add(new Move(zUp));
+                        add(new Move(x + xh, y + yv));
+                        add(new Move(0));
+                    } 
+                    add(new Move(x + xv, y + yv));            
+                    // up
+                    yv = ystart;
+                    if ( xv <= -rhole - rpensize) {
+                        float yh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(xv,2));
+                        add(new Move(x + xv, y + yh));
+                        add(new Move(zUp));
+                        add(new Move(x + xv, y - yh));
+                        add(new Move(0));
+                    }
+                    add(new Move(x + xv, y + yv));                    
+                    xv = xstart;
+                    if ( yv >= -rhole - rpensize) {
+                        float xh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(yv,2));
+                        add(new Move(x + xh, y + yv));
+                        add(new Move(zUp));
+                        add(new Move(x - xh, y + yv));
+                        add(new Move(0));
+                    }
+                    add(new Move(x + xv, y + yv));            
+                } // end of r > rhole + rpensize
+            }                        
+            xstart += penSize;
+        } // end while xstart > 0
+        if (rhole > 0) {
+            // Draw the outer circle of the hole
+            drawSingleCircle(x, y, rhole + rpensize);
+        }
+        if (tool.getS() == 'O') {
+            // draw the semicircular shape at the border
+            if ( w > h) {
+                // horizontal
+                float sign = -1;
+                for ( int i = 0; i <=1; i++) {
+                    ystart = -h / 2 + rpensize;
+                    float yv = ystart;
+                    add(new Move(zUp));
+                    first = true;
+                    while (ystart < 0) {
+                        while (yv < -ystart) {
+                            float xh = sign * ((float) Math.sqrt(Math.pow(ystart,2) - Math.pow(yv,2)));
+                            if ( first ) {
+                                add(new Move(0));
+                                first = false;
+                            }
+                            add(new Move(x + w / 2 * sign + xh, y + yv));
+                            yv += tolerance;
+                        }
+                        ystart += penSize;
+                    }
+                    sign = sign * -1;
+                }
+            } else if ( h > w) {
+                // vertical
+                float sign = -1;
+                for ( int i = 0; i <=1; i++) {
+                    xstart = -w / 2 + rpensize;
+                    float xv = xstart;
+                    add(new Move(zUp));
+                    first = true;
+                    while (xstart < 0) {
+                        while (xv < -xstart) {
+                            float yh = sign * ((float) Math.sqrt(Math.pow(xstart,2) - Math.pow(xv,2)));
+                            if ( first ) {
+                                add(new Move(0));
+                                first = false;
+                            }
+                            add(new Move(x + xv, y + h / 2 * sign + yh));
+                            xv += tolerance;
+                        }
+                        xstart += penSize;
+                    }
+                    sign = sign * -1;
+                }                
+            }
+        }
+    } 
+
+    //add(new Move(x, y));
+  }
+  
+  // Quando il Parser incontra una piazzola (Comando che termina con D03) inizia 
+  // la creaazione della serie mi Moves che servono per disegnare la piazzole
+  // che vengono aggiunte all'arraylist del disegno completo.
+  // All'arrivo su questa funzione la testina è in up, quindi bisogno ricordarsi di mandarla a zero dopo il primo movimento.
+  private void drawShapeOld(float x, float y, float dhole) {
     add(new Move(x, y));
     if (up) {
       add(new Move(0));
