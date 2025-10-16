@@ -40,6 +40,7 @@ public class GerberToGcode {
       + "   -mirrorX        Mirror in X.\n"
       + "   -mirrorY        Mirror in Y.\n"
       + "   -repeat=<t>     SET how mmany times encycle wires.\n"
+      + "   -drill=         SET File name of drill.\n"
             
       + "   -show           Show final drawing in window.\n"
       + "   -debug          Write bebug messages.\n"
@@ -55,6 +56,7 @@ public class GerberToGcode {
     Converter co = new Converter();
     String fileIn = "";
     String fileOut = "";
+    String drillFile = "";
     // DImensione della punta per il taglio del bordo
     float bitSize = 3.175f;
     for (String arg : args) {
@@ -87,6 +89,8 @@ public class GerberToGcode {
           co.setDy(Float.parseFloat(arg.substring(4)));          
         } else if (arg.startsWith("-bitSize=")) {
           bitSize = Float.parseFloat(arg.substring(9));          
+        } else if (arg.startsWith("-drill=")) {
+          drillFile = arg.substring(7);          
         } else {
           printHelp();
           return;

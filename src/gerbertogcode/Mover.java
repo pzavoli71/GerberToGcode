@@ -28,7 +28,7 @@ public class Mover {
   private float zUp = 3;
   private int repeat = 0;
   private int F = 1500;
-  
+  private String drillFile = "";
 
   private final LinkedList<Move> moves = new LinkedList();
   private float x = 0;
@@ -583,6 +583,13 @@ public class Mover {
   }
   public void setF(int F) {
     this.F = F;
+  }
+  public void setDrillFile(String file) {
+    this.drillFile = file;
+  }
+  
+  public String getDrillFile() {
+      return drillFile;
   }
 
 }

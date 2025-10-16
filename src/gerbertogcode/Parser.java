@@ -8,6 +8,8 @@ package gerbertogcode;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Hashtable;
+import java.util.List;
 
 /**
  *
@@ -20,6 +22,9 @@ public class Parser {
   private final Tool[] tools = new Tool[999];
   private boolean bebug = false;
 
+  // Drill
+    public Hashtable<String, Float> htHoles = new Hashtable<String, Float>(); 
+    
   public void setBebug(boolean bebug) {
     this.bebug = bebug;
   }
@@ -61,6 +66,9 @@ public class Parser {
       if (bebug) {
         System.out.println("  Format x:" + formatx + " y:" + formaty);
       }
+      // Qui devo leggere il file excellon drill, se c'è per leggere le coordinate dei fori e mapparle in una hashtable
+      leggiDrillFile(m.getDrillFile());
+      
     } else if (command.startsWith("MO")) {
       if (bebug) {
         System.out.println("  Units settings!");
@@ -149,7 +157,11 @@ public class Parser {
       if (bebug) {
         System.out.println("  To x:" + x + " y:" + y + " mode:" + d);
       }
+      // Inserisce una piazzola
       m.move(x, y, Integer.parseInt(d));
+      
+      
+      
     } else if (command.startsWith(
       "G01")) {
       if (bebug) {
@@ -204,4 +216,66 @@ public class Parser {
     }
     return content;
   }
+  
+  private void leggiDrillFile(String nomefile) {
+      try {
+        List<String> righe = Files.readAllLines(Paths.get(nomefile));
+        boolean g05 = false;
+        boolean metric = false;
+        float tools[] = new float[50];
+        int numtoolcurrent = 0;
+        for (String riga: righe ) {
+            if ( riga.equals("METRIC")) {
+                metric = true;
+            } else if (riga.startsWith(";")) {
+                continue;
+            } else if ( riga.equals("G05")) {
+                g05 = true;
+            } else if ( riga.startsWith("T")) {
+                if ( ! g05 ) {
+                    // Definizione del tool
+                    int numero = Integer.parseInt(riga.substring(1,riga.indexOf("C")));
+                    float hole = Float.parseFloat(riga.substring(riga.indexOf("C") + 1));
+                    tools[numero] = hole;
+                } else {
+                    // Scelta del tool corrente
+                    int numero = Integer.parseInt(riga.substring(1));
+                    numtoolcurrent = numero;
+                }
+            } else if ( riga.startsWith("X")) {
+                // Prendo le coordinate x e y del foro e le formatto in base a formatx e formaty del file gerber in modo da avere lo stesso formato per la chiave della hashtable
+                String x = riga.substring(1,riga.indexOf("Y"));
+                riga = riga.substring(riga.indexOf("Y") + 1);
+                String y = riga.substring(1);
+                x = format(x, formatx);
+                y = format(y, formaty);
+                
+                // Prima devo convertire x e y con formatx e formaty
+                htHoles.put(x+"_"+y, tools[numtoolcurrent]);
+            }
+
+        }
+      } catch(Exception e) {
+          e.printStackTrace();
+      }
+     
+  }
+
+      private String format(String v, int formato ) {
+          int interi = (int)(formato / 10);
+          int decimali = formato - interi * 10;
+          String vi = v.substring(0,v.indexOf("."));
+          String vd = v.substring(v.indexOf(".") + 1);
+          int zeri = interi - vi.length();
+          while (zeri > 0) {
+              vi = "0" + vi;
+              zeri--;
+          }
+          zeri = interi - vd.length();
+          while (zeri > 0) {
+              vd = vd + "0";
+              zeri--;
+          }
+          return vi +"." + vd;
+      }  
 }

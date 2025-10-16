@@ -29,7 +29,7 @@ public class Converter {
   private int repeat=0;
   private float tolerance = 0.01f;
   private float scale = 1;
-
+  private String drillFile = "";
   private String fileIn;
   private String fileOut ="out.gcode";
   
@@ -42,6 +42,8 @@ public class Converter {
     mo.setzUp(zUp);
     mo.setRepeat(repeat);
     mo.setF(F);
+    mo.setDrillFile(drillFile);
+    
     //mo.setF
     if (mirX) mo.setMirX(-1);
     if (mirY) mo.setMirY(-1);
@@ -81,6 +83,7 @@ public class Converter {
       + "\n   mirror Y:   "+mirY
       + "\n   repeat:     "+repeat
       + "\n   show:       "+show
+      + "\n   drill:       "+drillFile
       + "\n   debug:      "+bebug);
   }
 
@@ -123,7 +126,11 @@ public class Converter {
   public void setFileOut(String fileOut) {
     this.fileOut = fileOut;
   }
-
+  
+  public void setDrillFile(String file) {
+    this.drillFile = file;
+  }
+   
   public void setRepeat(int repeat) {
     this.repeat = repeat;
   }
