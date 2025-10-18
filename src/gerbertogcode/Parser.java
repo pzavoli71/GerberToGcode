@@ -49,6 +49,15 @@ public class Parser {
     return (float) Integer.parseInt(s) / Math.round(Math.pow(10, formaty - 10 * (int) (formaty / 10)));
   }
 
+  // La stringa che mi arriva è formattata come format ma senza il punto decimale, come nel file gerber. Metto il punto alla stringa
+  public String getStringRepresentation(String v, int format) {
+    int interi = (int)(format / 10);
+    int decimali = format - interi * 10;
+    String dec = v.substring(v.length() - decimali);
+    String i = v.substring(0,v.length() - decimali);
+    return i + "." + dec;
+  }
+  
   public void parseCommand(String command, Mover m) {
     if (bebug) {
       System.out.println("Parsing: " + command);
@@ -132,7 +141,7 @@ public class Parser {
       
       String coords[] = {"X","Y","I","J","D"};
       Float values[] = {Float.NaN, Float.NaN, 0.0f, 0.0f};
-      
+      String sx = "", sy = "";
       for (int i = 0; i < coords.length-1; i++) {
         String coord = coords[i];
         if(!command.contains(coord)){
@@ -145,9 +154,12 @@ public class Parser {
           next=coords[i+n];
         }
         if(i%2==0){
-          values[i] = parseFloatX(command.substring(command.indexOf(coord) + 1, command.indexOf(next)));
-        }else{
-          values[i] = parseFloatY(command.substring(command.indexOf(coord) + 1, command.indexOf(next)));
+            sx = command.substring(command.indexOf(coord) + 1, command.indexOf(next));
+          values[i] = parseFloatX(sx);
+          
+        } else {
+            sy = command.substring(command.indexOf(coord) + 1, command.indexOf(next));
+          values[i] = parseFloatY(sy);
         }
       }
       
@@ -157,8 +169,20 @@ public class Parser {
       if (bebug) {
         System.out.println("  To x:" + x + " y:" + y + " mode:" + d);
       }
-      // Inserisce una piazzola
-      m.move(x, y, Integer.parseInt(d));
+      
+      // Inserisce una piazzola o una linea
+      float dhole = 0.8f;
+      if ( d.equals("03")) {
+          // si tratta di una piazzola, verifico se nella hashtable dei fori ho un foro in corrispondenza
+          String vx = getStringRepresentation(sx, formatx);
+          vx = format(vx, formatx);
+          String vy = getStringRepresentation(sy, formaty);
+          vy = format(vy, formaty);
+          Float F = htHoles.get((vx + "_" +vy));
+          if ( F != null)
+              dhole = F;
+      }
+      m.move(x, y, Integer.parseInt(d), dhole);
       
       
       
@@ -245,7 +269,7 @@ public class Parser {
             } else if ( riga.startsWith("X")) {
                 // Prendo le coordinate x e y del foro e le formatto in base a formatx e formaty del file gerber in modo da avere lo stesso formato per la chiave della hashtable
                 String x = riga.substring(1,riga.indexOf("Y"));
-                riga = riga.substring(riga.indexOf("Y") + 1);
+                riga = riga.substring(riga.indexOf("Y"));
                 String y = riga.substring(1);
                 x = format(x, formatx);
                 y = format(y, formaty);
@@ -271,7 +295,7 @@ public class Parser {
               vi = "0" + vi;
               zeri--;
           }
-          zeri = interi - vd.length();
+          zeri = decimali - vd.length();
           while (zeri > 0) {
               vd = vd + "0";
               zeri--;

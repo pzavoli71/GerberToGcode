@@ -120,6 +120,7 @@ public class GerberToGcode {
     }
     co.setFileIn(fileIn);
     co.setFileOut(fileOut);
+    co.setDrillFile(drillFile);
     co.convert();
     
     // Scrivo il gcode del bordo

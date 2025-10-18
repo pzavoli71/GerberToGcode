@@ -46,7 +46,7 @@ public class Mover {
     this.tool = t;
   }
 
-  public void move(float x, float y, int how) {
+  public void move(float x, float y, int how, float dhole) {
     if (Float.isNaN(x)) {
       x = this.x;
     }
@@ -74,7 +74,7 @@ public class Mover {
           up = true;
         }
         // QUi devo vedere se esiste un hole in corrispondenza di questo pad e passarlo alla drawShape
-        drawShape(x, y, 0.8f);
+        drawShape(x, y, dhole);
         break;
     }
     this.x = x;
@@ -262,7 +262,7 @@ public class Mover {
         float xstart = -w / 2 + penSize / 2;
         float ystart = -h / 2 + penSize / 2;
         while ( xstart < 0 || first) {
-            ystart = xstart;
+            //ystart = xstart;
             if ( first && up ) {
                 add(new Move(0));
                 up = false;
@@ -325,7 +325,7 @@ public class Mover {
                     add(new Move(x + xv, y + yv));            
                 } // end of r > rhole + rpensize
             }                        
-            xstart += penSize;
+            xstart += penSize; ystart += penSize;
         } // end while xstart > 0
         if (rhole > 0) {
             // Draw the outer circle of the hole
