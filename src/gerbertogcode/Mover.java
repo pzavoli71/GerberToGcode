@@ -276,17 +276,17 @@ public class Mover {
                 add(new Move(x + xv, y + yv));
                 xv = xstart;
                 add(new Move(x + xv, y + yv));
-                yv = xstart;
+                yv = ystart;
                 add(new Move(x + xv, y + yv));                
                 first = false;
             } else {
                 // down
                 // Control if the vertical line touch the hole circle 
                 float r = (float) Math.sqrt(Math.pow(xstart,2) + Math.pow(ystart,2));
-                if ( r > rhole + rpensize) {
+                if ( r - rpensize > rhole + rpensize) {
                     add(new Move(x + xv, y + yv));
-                    if ( xv >= -rhole - rpensize) {
-                        float yh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(xv,2));
+                    if ( xv + rpensize > -rhole - rpensize) {
+                        float yh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(xv + rpensize,2));
                         add(new Move(x + xv, y - yh));
                         add(new Move(zUp));
                         add(new Move(x + xv, y + yh));
@@ -296,8 +296,8 @@ public class Mover {
                     add(new Move(x + xv, y + yv));                    
                     // right
                     xv = -xstart;
-                    if ( yv <= -rhole - rpensize) {
-                        float xh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(yv,2));
+                    if ( yv - rpensize < rhole + rpensize) {
+                        float xh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(yv - rpensize,2));
                         add(new Move(x - xh, y + yv));
                         add(new Move(zUp));
                         add(new Move(x + xh, y + yv));
@@ -306,8 +306,8 @@ public class Mover {
                     add(new Move(x + xv, y + yv));            
                     // up
                     yv = ystart;
-                    if ( xv <= -rhole - rpensize) {
-                        float yh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(xv,2));
+                    if ( xv - rpensize < rhole + rpensize) {
+                        float yh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(xv - rpensize,2));
                         add(new Move(x + xv, y + yh));
                         add(new Move(zUp));
                         add(new Move(x + xv, y - yh));
@@ -315,8 +315,8 @@ public class Mover {
                     }
                     add(new Move(x + xv, y + yv));                    
                     xv = xstart;
-                    if ( yv >= -rhole - rpensize) {
-                        float xh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(yv,2));
+                    if ( yv + rpensize > -rhole - rpensize) {
+                        float xh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(yv + rpensize,2));
                         add(new Move(x + xh, y + yv));
                         add(new Move(zUp));
                         add(new Move(x - xh, y + yv));
@@ -324,58 +324,64 @@ public class Mover {
                     }
                     add(new Move(x + xv, y + yv));            
                 } // end of r > rhole + rpensize
-            }                        
-            xstart += penSize; ystart += penSize;
+            }        
+            if ( w > h) {
+                xstart += penSize; ystart += penSize * h / w;
+            } else {
+                ystart += penSize; xstart += penSize * w / h;                
+            }
         } // end while xstart > 0
         if (rhole > 0) {
             // Draw the outer circle of the hole
-            drawSingleCircle(x, y, rhole + rpensize);
+            drawSingleCircle(x, y, rhole - rpensize);
         }
         if (tool.getS() == 'O') {
             // draw the semicircular shape at the border
             if ( w > h) {
                 // horizontal
+                add(new Move(zUp));
                 float sign = -1;
                 for ( int i = 0; i <=1; i++) {
                     ystart = -h / 2 + rpensize;
                     float yv = ystart;
-                    add(new Move(zUp));
                     first = true;
                     while (ystart < 0) {
                         while (yv < -ystart) {
                             float xh = sign * ((float) Math.sqrt(Math.pow(ystart,2) - Math.pow(yv,2)));
+                            add(new Move(x + w / 2 * sign + xh, y + yv));
                             if ( first ) {
                                 add(new Move(0));
                                 first = false;
                             }
-                            add(new Move(x + w / 2 * sign + xh, y + yv));
                             yv += tolerance;
                         }
                         ystart += penSize;
                     }
                     sign = sign * -1;
+                    add(new Move(zUp));
                 }
             } else if ( h > w) {
                 // vertical
                 float sign = -1;
+                add(new Move(zUp));
                 for ( int i = 0; i <=1; i++) {
                     xstart = -w / 2 + rpensize;
                     float xv = xstart;
-                    add(new Move(zUp));
                     first = true;
                     while (xstart < 0) {
                         while (xv < -xstart) {
                             float yh = sign * ((float) Math.sqrt(Math.pow(xstart,2) - Math.pow(xv,2)));
+                            add(new Move(x + xv, y + h / 2 * sign + yh));
                             if ( first ) {
                                 add(new Move(0));
                                 first = false;
                             }
-                            add(new Move(x + xv, y + h / 2 * sign + yh));
                             xv += tolerance;
                         }
                         xstart += penSize;
                     }
                     sign = sign * -1;
+                    add(new Move(zUp));
                 }                
             }
         }
