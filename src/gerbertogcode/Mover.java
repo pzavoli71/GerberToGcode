@@ -256,6 +256,12 @@ public class Mover {
     } else if (tool.getS() == 'R' || tool.getS() == 'O') {
       float h = tool.getH();
       float w = tool.getW();
+      if (tool.getS() == 'O' ) {
+         if ( w > h) 
+             w -= h;
+         else if ( h > w)
+             h -= w;
+      } 
       boolean first = true;
       add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2));
 
@@ -283,7 +289,7 @@ public class Mover {
                 // down
                 // Control if the vertical line touch the hole circle 
                 float r = (float) Math.sqrt(Math.pow(xstart,2) + Math.pow(ystart,2));
-                if ( r - rpensize > rhole + rpensize) {
+                if ( r  > rhole + rpensize) {
                     add(new Move(x + xv, y + yv));
                     if ( xv + rpensize > -rhole - rpensize) {
                         float yh = (float) Math.sqrt(Math.pow(rhole + rpensize,2) - Math.pow(xv + rpensize,2));
@@ -337,15 +343,18 @@ public class Mover {
         }
         if (tool.getS() == 'O') {
             // draw the semicircular shape at the border
+            h = tool.getH();
+            w = tool.getW();
             if ( w > h) {
                 // horizontal
+                w -= h;
                 add(new Move(zUp));
                 float sign = -1;
                 for ( int i = 0; i <=1; i++) {
                     ystart = -h / 2 + rpensize;
-                    float yv = ystart;
                     first = true;
                     while (ystart < 0) {
+                        float yv = ystart;
                         while (yv < -ystart) {
                             float xh = sign * ((float) Math.sqrt(Math.pow(ystart,2) - Math.pow(yv,2)));
                             add(new Move(x + w / 2 * sign + xh, y + yv));
@@ -362,13 +371,14 @@ public class Mover {
                 }
             } else if ( h > w) {
                 // vertical
+                h -= w;
                 float sign = -1;
                 add(new Move(zUp));
                 for ( int i = 0; i <=1; i++) {
                     xstart = -w / 2 + rpensize;
-                    float xv = xstart;
                     first = true;
                     while (xstart < 0) {
+                        float xv = xstart;
                         while (xv < -xstart) {
                             float yh = sign * ((float) Math.sqrt(Math.pow(xstart,2) - Math.pow(xv,2)));
                             add(new Move(x + xv, y + h / 2 * sign + yh));
