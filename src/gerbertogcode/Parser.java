@@ -22,6 +22,8 @@ public class Parser {
   private final Tool[] tools = new Tool[999];
   private boolean bebug = false;
 
+  private float dx = 0.0f, dy = 0.0f;
+  
   // Drill
     public Hashtable<String, Float> htHoles = new Hashtable<String, Float>(); 
     
@@ -42,13 +44,19 @@ public class Parser {
   }
 
   public float parseFloatX(String s) {
-    return (float) Integer.parseInt(s) / Math.round(Math.pow(10, formatx - 10 * (int) (formatx / 10)));
+    //return (float) Integer.parseInt(s) / Math.round(Math.pow(10, formatx - 10 * (int) (formatx / 10)));
+    return Parser.parseFloat(s, formatx);
   }
 
   public float parseFloatY(String s) {
-    return (float) Integer.parseInt(s) / Math.round(Math.pow(10, formaty - 10 * (int) (formaty / 10)));
+    //return (float) Integer.parseInt(s) / Math.round(Math.pow(10, formaty - 10 * (int) (formaty / 10)));
+    return Parser.parseFloat(s, formaty);
   }
 
+  public static float parseFloat(String s, int format) {
+    return (float) Integer.parseInt(s) / Math.round(Math.pow(10, format - 10 * (int) (format / 10)));
+  }
+  
   // La stringa che mi arriva è formattata come format ma senza il punto decimale, come nel file gerber. Metto il punto alla stringa
   public String getStringRepresentation(String v, int format) {
     int interi = (int)(format / 10);
@@ -155,11 +163,11 @@ public class Parser {
         }
         if(i%2==0){
             sx = command.substring(command.indexOf(coord) + 1, command.indexOf(next));
-          values[i] = parseFloatX(sx);
+          values[i] = parseFloat(sx, formatx);
           
         } else {
             sy = command.substring(command.indexOf(coord) + 1, command.indexOf(next));
-          values[i] = parseFloatY(sy);
+          values[i] = parseFloat(sy, formaty);
         }
       }
       
@@ -285,21 +293,29 @@ public class Parser {
      
   }
 
-      private String format(String v, int formato ) {
-          int interi = (int)(formato / 10);
-          int decimali = formato - interi * 10;
-          String vi = v.substring(0,v.indexOf("."));
-          String vd = v.substring(v.indexOf(".") + 1);
-          int zeri = interi - vi.length();
-          while (zeri > 0) {
-              vi = "0" + vi;
-              zeri--;
-          }
-          zeri = decimali - vd.length();
-          while (zeri > 0) {
-              vd = vd + "0";
-              zeri--;
-          }
-          return vi +"." + vd;
-      }  
+    private String format(String v, int formato ) {
+        int interi = (int)(formato / 10);
+        int decimali = formato - interi * 10;
+        String vi = v.substring(0,v.indexOf("."));
+        String vd = v.substring(v.indexOf(".") + 1);
+        int zeri = interi - vi.length();
+        while (zeri > 0) {
+            vi = "0" + vi;
+            zeri--;
+        }
+        zeri = decimali - vd.length();
+        while (zeri > 0) {
+            vd = vd + "0";
+            zeri--;
+        }
+        return vi +"." + vd;
+    }  
+      
+    public void setDx(float dx) {
+        this.dx = dx;
+    }
+    public void setDy(float dy) {
+        this.dy = dy;
+    }
+
 }

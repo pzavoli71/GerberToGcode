@@ -95,6 +95,21 @@ public class Mover {
       a.append("G1 Z").append(zUp * scale).append("\n");
       a.append("G1 X0.0 Y0.0\n");
     }
+    // Disegno il bordo della scheda
+      a.append(";").append("\n");      
+      a.append("; Stampo il bordo della scheda").append("\n");      
+      a.append("G1 Z").append(0).append("\n");      
+      a.append("G1 X");
+      a.append(Float.toString(Converter.maxx)).append("\n");      
+      a.append("G1 Y");
+      a.append(Float.toString(Converter.maxy)).append("\n");      
+      a.append("G1 X");
+      a.append(Float.toString(0.0f)).append("\n");      
+      a.append("G1 Y");
+      a.append(Float.toString(0.0f)).append("\n");      
+
+      a.append("G1 X0.0 Y0.0\n");
+    
     //a.append("M18\n");
     return a;
   }
@@ -226,26 +241,6 @@ public class Mover {
       float xstart = -rtool + rpensize;
       while (xstart <= -rhole - rpensize) { // Comunque faccio almeno un giro
           drawSingleCircle(x, y, -xstart);
-          /*
-          float xv = xstart;
-          while ( xv <= -xstart) { // xstart is negative, so xv varies from -xstart to xstart
-              float yv = (float) Math.sqrt(Math.pow(xstart,2) - Math.pow(xv, 2));
-              add(new Move(x+xv, y+yv));
-              if ( first && up) {
-                add(new Move(0));
-                up = false;
-                first = false;
-              }
-              xv += tolerance;
-          }
-          // Now I go from right to left in x and draw the bottom arc of circle
-          xv = -xstart;
-          while ( xv >= xstart) { // xstart is negative, so xv varies from -xstart to xstart
-              float yv = -(float) Math.sqrt(Math.pow(xstart,2) - Math.pow(xv, 2));
-              add(new Move(x+xv, y+yv));
-              xv -= tolerance;
-          }
-*/
           // Now I increment xstart to draw another circle pensize/2 right of the previous
           xstart += penSize;
       }
@@ -399,156 +394,6 @@ public class Mover {
 
     //add(new Move(x, y));
   }
-  
-  // Quando il Parser incontra una piazzola (Comando che termina con D03) inizia 
-  // la creaazione della serie mi Moves che servono per disegnare la piazzole
-  // che vengono aggiunte all'arraylist del disegno completo.
-  // All'arrivo su questa funzione la testina è in up, quindi bisogno ricordarsi di mandarla a zero dopo il primo movimento.
-  private void drawShapeOld(float x, float y, float dhole) {
-    add(new Move(x, y));
-    if (up) {
-      add(new Move(0));
-      up = false;
-    }
-
-    if (tool.getS() == 'C') {
-      float i = tool.getD() / (penSize * 2) - 0.5f;
-      for (; i > 0; i--) {
-        if (i == 0) {
-          continue;
-        }
-        add(new Move(x - i * penSize, y));
-        for (float xi = x - i * penSize + tolerance; xi <= x + i * penSize; xi += tolerance) {
-          float py = y + (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xi - x, 2));
-          add(new Move(xi, py));
-        }
-        for (float xi = x + i * penSize - tolerance; xi >= x - i * penSize; xi -= tolerance) {
-          float py = y - (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xi - x, 2));
-          add(new Move(xi, py));
-        }
-        add(new Move(x - i * penSize, y));
-      }
-    } else if (tool.getS() == 'R') {
-      float h = tool.getH();
-      float w = tool.getW();
-      add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2));
-
-      if (h >= w) {
-        float wa = 0;
-        while (wa < w - penSize) {
-          add(new Move(x - w / 2 + penSize / 2 + wa, y + h / 2 - penSize / 2));
-          float z = w - wa - penSize;
-          if (z > penSize) {
-            wa += penSize;
-          } else {
-            wa += z;
-          }
-          add(new Move(x - w / 2 + penSize / 2 + wa, y + h / 2 - penSize / 2));
-          add(new Move(x - w / 2 + penSize / 2 + wa, y - h / 2 + penSize / 2));
-          z = w - wa - penSize;
-          if (z <= 0) {
-            break;
-          } else if (z > penSize) {
-            wa += penSize;
-          } else {
-            wa += z;
-          }
-          add(new Move(x - w / 2 + penSize / 2 + wa, y - h / 2 + penSize / 2));
-          add(new Move(x - w / 2 + penSize / 2 + wa, y + h / 2 - penSize / 2));
-        }
-      } else {
-        float ha = 0;
-        while (ha < h - penSize) {
-          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2 + ha));
-          float z = h - ha - penSize;
-          if (z > penSize) {
-            ha += penSize;
-          } else {
-            ha += z;
-          }
-          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2 + ha));
-          add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2 + ha));
-          z = h - ha - penSize;
-          if (z <= 0) {
-            break;
-          } else if (z > penSize) {
-            ha += penSize;
-          } else {
-            ha += z;
-          }
-          add(new Move(x - w / 2 + penSize / 2, y - h / 2 + penSize / 2 + ha));
-          add(new Move(x + w / 2 - penSize / 2, y - h / 2 + penSize / 2 + ha));
-        }
-      }
-
-      add(new Move(x, y));
-    } else if (tool.getS() == 'O') {
-
-        float h = tool.getH();
-        float w = tool.getW();
-        float d = Math.min(h, w);
-
-        float xs = x;
-        float ys = y;
-        float xf = x;
-        float yf = y;
-        if (h >= w) {
-            ys = y - (h - d) / 2;
-            yf = y + (h - d) / 2;
-        } else {
-            xf = x - (w - d) / 2;
-            xs = x + (w - d) / 2;
-        }
-    
-        float tx = xf - xs;
-        float ty = yf - ys;
-        if(tx==0 && ty==0){
-            tx=1;
-        }        
-        float txn = tx / (float) Math.sqrt(tx * tx + ty * ty);
-        float tyn = ty / (float) Math.sqrt(tx * tx + ty * ty);
-        float nx = -tyn;
-        float ny = txn;
-        
-        
-        //go to begin
-        add(new Move(xs, ys));
-
-        float i = d / (penSize * 2) - 0.5f;
-        for (; i > 0; i--) {
-            //line to side
-            add(new Move(xf + nx * penSize * i, yf + ny * penSize * i));
-            //line back around
-            add(new Move(xs + nx * penSize * i, ys + ny * penSize * i));
-            //round around - circle vith center in this.x this.y and r = i*penSize
-            for (float ii = 0; ii <= i * penSize * 2; ii += tolerance) {
-                float xr = i * penSize - ii;
-                float yr = (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xr, 2));
-                float px = nx * xr - txn * yr + xs;
-                float py = ny * xr - tyn * yr + ys;
-                add(new Move(px, py));
-            }
-            add(new Move(xs - nx * penSize * i, ys - ny * penSize * i));
-            //line to around
-            add(new Move(xf - nx * penSize * i, yf - ny * penSize * i));
-            //round around
-            for (float ii = 0; ii <= i * penSize * 2; ii += tolerance) {
-                float xr = i * penSize - ii;
-                float yr = (float) Math.sqrt(Math.pow(i * penSize, 2) - Math.pow(xr, 2));
-                float px = -nx * xr + txn * yr + xf;
-                float py = -ny * xr + tyn * yr + yf;
-                add(new Move(px, py));
-            }
-        }
-        //back to center of circle on the end
-        add(new Move(xf, yf));
-        //back to centr of line
-        add(new Move(x, y));
-        
-    }
-
-    add(new Move(x, y));
-  }
 
   private void add(Move m) {
     m.mirror(mirX, mirY);
@@ -565,8 +410,14 @@ public class Mover {
     if (m.getToX() > maxX) {
       maxX = m.getToX();
     }
-    ofX = -minX;
-    ofY = -minY;
+    if ( Converter.minx != 0 )
+        ofX = -Converter.minx;
+    else
+        ofX = -minX;
+    if ( Converter.miny != 0 )
+        ofY = -Converter.miny;
+    else
+        ofY = -minY;
   }
 
   public void setPenSize(float penSize) {

@@ -20,8 +20,11 @@ public class Converter {
   private float zUp = 3;
   public static int F = 1500;
   public static float penDown = -0.2f;
-  public static float dx = 80.0f;
-  public static float dy = 80.0f;
+  public static float minx = 0.0f;
+  public static float miny = 0.0f;
+  public static float maxx = 80.0f;
+  public static float maxy = 80.0f;
+  
   private boolean bebug = false;
   private boolean show = false;
   private boolean mirX = false;
@@ -30,6 +33,7 @@ public class Converter {
   private float tolerance = 0.01f;
   private float scale = 1;
   private String drillFile = "";
+  private String edgeFile = "";
   private String fileIn;
   private String fileOut ="out.gcode";
   
@@ -48,6 +52,8 @@ public class Converter {
     if (mirX) mo.setMirX(-1);
     if (mirY) mo.setMirY(-1);
     Parser pa = new Parser();
+    pa.setDx(minx);
+    pa.setDy(miny);
     pa.setBebug(bebug);
     pa.parseFile(fileIn, mo);
     mo.saveGcode(fileOut);
@@ -75,8 +81,8 @@ public class Converter {
       + "\n   penUp:      "+zUp
       + "\n   penDown:      "+penDown
       + "\n   F:      " + F
-      + "\n   dx:      " + dx
-      + "\n   dy:      "+dy            
+      + "\n   dx:      " + minx
+      + "\n   dy:      "+miny            
       + "\n   precision:  "+tolerance
       + "\n   scale:      "+scale
       + "\n   mirror X:   "+mirX
@@ -84,6 +90,7 @@ public class Converter {
       + "\n   repeat:     "+repeat
       + "\n   show:       "+show
       + "\n   drill:       "+drillFile
+      + "\n   edge:       "+edgeFile
       + "\n   debug:      "+bebug);
   }
 
@@ -130,7 +137,11 @@ public class Converter {
   public void setDrillFile(String file) {
     this.drillFile = file;
   }
-   
+
+  public void setEdgeFile(String file) {
+    this.edgeFile = file;
+  }
+  
   public void setRepeat(int repeat) {
     this.repeat = repeat;
   }
@@ -140,11 +151,17 @@ public class Converter {
   public void setPenDown(float pd) {
     Converter.penDown = pd;
   }
-  public void setDx(float dx) {
-    this.dx = dx;
+  public void setMinx(float dx) {
+    this.minx = dx;
   }
-  public void setDy(float dy) {
-    this.dy = dy;
+  public void setMiny(float dy) {
+    this.miny = dy;
+  }
+  public void setMaxx(float dx) {
+    this.maxx = dx;
+  }
+  public void setMaxy(float dy) {
+    this.maxy = dy;
   }
   
 }

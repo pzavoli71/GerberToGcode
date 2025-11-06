@@ -73,5 +73,4 @@ public class Move {
   public float getToZ() {
     return toZ * scale;
   }
-
 }
