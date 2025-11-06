@@ -54,9 +54,9 @@ public class Move {
       a.append(" F300.00\n");
     } else {
       a.append(" X");
-      a.append(Float.toString(getToY()));
-      a.append(" Y");
       a.append(Float.toString(getToX()));
+      a.append(" Y");
+      a.append(Float.toString(getToY()));
       a.append(" F" + Converter.F + ".00\n");
     }
     return a;

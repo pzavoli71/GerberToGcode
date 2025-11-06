@@ -178,10 +178,11 @@ public class GerberToGcode {
     boolean bebug = false;
     float minx = Float.MAX_VALUE;
     float miny = Float.MAX_VALUE;
-    float maxx = Float.MIN_VALUE;
-    float maxy = Float.MIN_VALUE;
+    float maxx = -minx;
+    float maxy = -miny;
     
     for (String command: righe ) {
+        command = command.replace("%", "").replace("\r\n", "").trim().toUpperCase();
         if (command.startsWith("G04")) {
           if (bebug) {
             System.out.println("  Only comment.");
@@ -246,8 +247,8 @@ public class GerberToGcode {
       }
         co.setMinx(minx);
         co.setMiny(miny);
-        co.setMaxx(minx);
-        co.setMaxy(miny);
+        co.setMaxx(maxx);
+        co.setMaxy(maxy);
         
     
   }

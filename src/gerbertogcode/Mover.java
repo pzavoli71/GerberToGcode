@@ -98,15 +98,18 @@ public class Mover {
     // Disegno il bordo della scheda
       a.append(";").append("\n");      
       a.append("; Stampo il bordo della scheda").append("\n");      
+      a.append("G1 X");
+      a.append(Float.toString(Converter.minx));
+      a.append(" Y" + Float.toString(Converter.miny)).append("\n");      
       a.append("G1 Z").append(0).append("\n");      
       a.append("G1 X");
-      a.append(Float.toString(Converter.maxx)).append("\n");      
+      a.append(Float.toString(Converter.maxx)).append("\n");
       a.append("G1 Y");
       a.append(Float.toString(Converter.maxy)).append("\n");      
       a.append("G1 X");
-      a.append(Float.toString(0.0f)).append("\n");      
+      a.append(Float.toString(Converter.minx)).append("\n");      
       a.append("G1 Y");
-      a.append(Float.toString(0.0f)).append("\n");      
+      a.append(Float.toString(Converter.miny)).append("\n");      
 
       a.append("G1 X0.0 Y0.0\n");
     
