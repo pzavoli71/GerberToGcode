@@ -337,7 +337,7 @@ public class Mover {
         } // end while xstart > 0
         if (rhole > 0) {
             // Draw the outer circle of the hole
-            drawSingleCircle(x, y, rhole - rpensize);
+            drawSingleCircle(x, y, rhole + rpensize);
         }
         if (tool.getS() == 'O') {
             // draw the semicircular shape at the border
