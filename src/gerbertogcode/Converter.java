@@ -20,8 +20,8 @@ public class Converter {
   private float zUp = 3;
   public static int F = 1500;
   public static float penDown = -0.2f;
-  public static float minx = 0.0f;
-  public static float miny = 0.0f;
+  public static float minx = Float.MAX_VALUE;
+  public static float miny = Float.MAX_VALUE;
   public static float maxx = 80.0f;
   public static float maxy = 80.0f;
   

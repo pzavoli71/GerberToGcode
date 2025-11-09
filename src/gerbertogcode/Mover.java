@@ -413,11 +413,11 @@ public class Mover {
     if (m.getToX() > maxX) {
       maxX = m.getToX();
     }
-    if ( Converter.minx != 0 )
+    if ( Converter.minx != Float.MAX_VALUE )
         ofX = -Converter.minx;
     else
         ofX = -minX;
-    if ( Converter.miny != 0 )
+    if ( Converter.miny != Float.MAX_VALUE )
         ofY = -Converter.miny;
     else
         ofY = -minY;
