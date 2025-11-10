@@ -17,13 +17,13 @@ import javax.swing.JPanel;
 public class Converter {
 
   private float penSize = 0.2f;
-  private float zUp = 3;
+  private float zUp = 2;
   public static int F = 1500;
   public static float penDown = -0.2f;
   public static float minx = Float.MAX_VALUE;
   public static float miny = Float.MAX_VALUE;
-  public static float maxx = 80.0f;
-  public static float maxy = 80.0f;
+  public static float maxx = -Float.MAX_VALUE;
+  public static float maxy = -Float.MAX_VALUE;
   
   private boolean bebug = false;
   private boolean show = false;
@@ -56,6 +56,9 @@ public class Converter {
     pa.setDy(miny);
     pa.setBebug(bebug);
     pa.parseFile(fileIn, mo);
+    
+    pa.parseFile(edgeFile, mo);
+    
     mo.saveGcode(fileOut);
     if (show) {
       JFrame fr = new JFrame("G2G - Show: "+fileIn);

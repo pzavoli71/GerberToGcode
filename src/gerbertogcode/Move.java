@@ -63,6 +63,8 @@ public class Move {
   }
 
   public float getToX() {
+      if ( mirX == -1 && Converter.maxx != -Float.MAX_VALUE)
+          return (toX + ofX) * scale * mirX + Converter.maxx - Converter.minx;
     return (toX + ofX) * scale * mirX;
   }
 

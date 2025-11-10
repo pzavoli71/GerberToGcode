@@ -96,7 +96,7 @@ public class Mover {
       a.append("G1 X0.0 Y0.0\n");
     }
     // Disegno il bordo della scheda
-      a.append(";").append("\n");      
+      /*a.append(";").append("\n");      
       a.append("; Stampo il bordo della scheda").append("\n");      
       a.append("G1 X");
       a.append(Float.toString(Converter.minx));
@@ -112,7 +112,7 @@ public class Mover {
       a.append(Float.toString(Converter.miny)).append("\n");      
 
       a.append("G1 X0.0 Y0.0\n");
-    
+    */
     //a.append("M18\n");
     return a;
   }
